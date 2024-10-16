@@ -29,11 +29,15 @@ class PokemonController extends Controller
             'hp' => 'nullable|integer|max:9999|min:0',
             'attack' => 'nullable|integer|max:9999|min:0',
             'defense' => 'nullable|integer|max:9999|min:0',
-            'is_legendary' => 'required|boolean',
             'photo' => 'nullable|image|max:2048|mimes:jpeg,jpg,png,gif,svg',
         ]);
 
-        Pokemon::create($request->all());
+
+        $data = $request->except(['photo']);
+        $data['is_legendary'] = $request->has('is_legendary') ? 1 : 0;
+
+
+        Pokemon::create($data);
 
         return redirect()->route('pokemon.index')->with('success', 'Pokemon created successfully.');
     }
@@ -59,11 +63,14 @@ class PokemonController extends Controller
             'hp' => 'nullable|integer|max:9999|min:0',
             'attack' => 'nullable|integer|max:9999|min:0',
             'defense' => 'nullable|integer|max:9999|min:0',
-            'is_legendary' => 'required|boolean',
             'photo' => 'nullable|image|max:2048|mimes:jpeg,jpg,png,gif,svg',
         ]);
 
-        $pokemon->fill($request->all());
+
+        $data = $request->except(['photo']);
+        $data['is_legendary'] = $request->has('is_legendary') ? 1 : 0;
+
+        $pokemon->fill($data);
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('public/photos');
